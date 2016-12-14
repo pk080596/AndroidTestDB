@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TestDatabase</string>
+    <string name="load_database">Load Database</string>
+    <string name="database_loaded">Database loaded!</string>
+    <string name="database_load_failed">Database load failed</string>
 </resources>
