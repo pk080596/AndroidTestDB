@@ -44,7 +44,7 @@ public final class EmployeesContract extends BaseContract {
 
     public static void onCreate(@NonNull final SQLiteDatabase db) {
         String sql = String.format(Locale.ENGLISH, "CREATE TABLE %s (" + // table name
-                        "%s INTEGER PRIMARY KEY AUTO INCREMENT, " +      // _id
+                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +      // _id
                         "%s DATETIME NOT NULL, " +                       // birthdate
                         "%s TEXT NOT NULL, " +                           // firstname
                         "%s TEXT NOT NULL, " +                           // lastname
