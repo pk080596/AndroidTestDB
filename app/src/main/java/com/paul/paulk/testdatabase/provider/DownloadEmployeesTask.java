@@ -1,6 +1,7 @@
 package com.paul.paulk.testdatabase.provider;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ public class DownloadEmployeesTask implements Runnable {
 
     private Context context;
     private EmployeeAPI api;
-
+    private SQLiteDatabase db;
 
     public DownloadEmployeesTask(Context c) {
         context = c;

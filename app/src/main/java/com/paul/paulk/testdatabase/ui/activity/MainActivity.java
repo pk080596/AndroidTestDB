@@ -27,9 +27,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements Callback<List<Employee>> {
+public class MainActivity extends AppCompatActivity {
 
-    private final static int EXTERNAL_STORATE = 1;
+    private final static int EXTERNAL_STORAGE = 1;
     private EmployeeAPI api;
 
     @BindView(R.id.load_database)
@@ -45,22 +45,17 @@ public class MainActivity extends AppCompatActivity implements Callback<List<Emp
 
         ServerAPI.create ();
         api = ServerAPI.get ().api;
-
-        if (ContextCompat.checkSelfPermission (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && BuildConfig.VERSION_CODE > Build.VERSION_CODES.LOLLIPOP_MR1)
-            ActivityCompat.requestPermissions (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET},
-                    EXTERNAL_STORATE);
+        checkPermission ();
     }
 
     @OnClick(R.id.load_database)
     public void downloadDatabase () {
-        //new Thread(new DownloadEmployeesTask (this)).start ();
-        Call<List<Employee>> call = api.listEmployees ();
-        call.enqueue (this);
+        new Thread(new DownloadEmployeesTask (this)).start ();
+        //Call<List<Employee>> call = api.listEmployees ();
+        //call.enqueue (this);
     }
 
-    @Override
+    /*@Override
     public void onResponse (Call<List<Employee>> call, Response<List<Employee>> response) {
         String firstNames = "";
         for (Employee employee : response.body ()) {
@@ -72,9 +67,16 @@ public class MainActivity extends AppCompatActivity implements Callback<List<Emp
     @Override
     public void onFailure (Call<List<Employee>> call, Throwable t) {
         Toast.makeText (this, t.getLocalizedMessage (), Toast.LENGTH_LONG).show ();
-    }
+    }*/
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult (requestCode, permissions, grantResults);
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && BuildConfig.VERSION_CODE > Build.VERSION_CODES.LOLLIPOP_MR1)
+            ActivityCompat.requestPermissions (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET}, EXTERNAL_STORAGE);
     }
 }
