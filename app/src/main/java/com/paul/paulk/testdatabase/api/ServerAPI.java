@@ -1,9 +1,6 @@
 package com.paul.paulk.testdatabase.api;
 
-import android.content.Context;
-
 import com.paul.paulk.testdatabase.Config;
-import com.paul.paulk.testdatabase.model.Employee;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

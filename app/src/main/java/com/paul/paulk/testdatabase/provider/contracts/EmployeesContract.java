@@ -18,7 +18,7 @@ public final class EmployeesContract extends BaseContract {
 
     public static final Uri CONTENT_URI = BASE_URL.buildUpon ().appendPath (PATH.EMPLOYEE).build ();
 
-    // employee number
+    // employee id
     public static final String _ID = "emp_no";
     // employee birth date
     public static final String BIRTHDATE = "birth_date";
@@ -43,6 +43,7 @@ public final class EmployeesContract extends BaseContract {
     private static final int GENDER_LEN = 1;
 
     public static void onCreate(@NonNull final SQLiteDatabase db) {
+        // TODO: better restrictions
         String sql = String.format(Locale.ENGLISH, "CREATE TABLE %s (" + // table name
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +      // _id
                         "%s DATETIME NOT NULL, " +                       // birthdate

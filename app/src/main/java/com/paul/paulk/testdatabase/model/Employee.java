@@ -6,13 +6,11 @@ import android.net.Uri;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.paul.paulk.testdatabase.BuildConfig;
 import com.paul.paulk.testdatabase.provider.contracts.DatabaseObject;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import static com.paul.paulk.testdatabase.provider.contracts.EmployeesContract.BIRTHDATE;
 import static com.paul.paulk.testdatabase.provider.contracts.EmployeesContract.FIRSTNAME;
@@ -26,7 +24,6 @@ import static com.paul.paulk.testdatabase.provider.contracts.EmployeesContract._
  */
 
 @Getter
-@NoArgsConstructor
 @EqualsAndHashCode
 public class Employee implements DatabaseObject {
     @Expose @SerializedName ("emp_no") String id;

@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
+import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
+import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
 /**
  * Created by paulk on 12/13/2016.
@@ -21,6 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate (SQLiteDatabase sqLiteDatabase) {
         EmployeesContract.onCreate (sqLiteDatabase);
+        SalariesContract.onCreate (sqLiteDatabase);
+        TitlesContract.onCreate (sqLiteDatabase);
     }
 
     @Override

@@ -2,14 +2,12 @@ package com.paul.paulk.testdatabase.ui.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -19,9 +17,9 @@ import com.paul.paulk.testdatabase.api.EmployeeAPI;
 import com.paul.paulk.testdatabase.api.ServerAPI;
 import com.paul.paulk.testdatabase.provider.DatabaseHelper;
 import com.paul.paulk.testdatabase.provider.DownloadEmployeesTask;
-import com.paul.paulk.testdatabase.provider.EmployeesProvider;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
-
+import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
+import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final static int EXTERNAL_STORAGE = 1;
     private EmployeeAPI api;
-    private DatabaseHelper dbHelper;
 
     @BindView(R.id.load_database)
     Button loadDatabase;
@@ -54,8 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.load_database)
     public void downloadDatabase () {
-        Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build ();
+        Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
+        Uri uri2 = SalariesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
+        Uri uri3 = TitlesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
         getContentResolver().query(uri, EmployeesContract.PROJECTION, null, null, null);
+        getContentResolver().query(uri2, SalariesContract.PROJECTION, null, null, null);
+        getContentResolver().query(uri3, TitlesContract.PROJECTION, null, null, null);
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

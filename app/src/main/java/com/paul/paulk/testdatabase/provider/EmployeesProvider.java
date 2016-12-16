@@ -12,8 +12,12 @@ import android.support.compat.BuildConfig;
 
 import com.paul.paulk.testdatabase.provider.contracts.BaseContract;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
+import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
+import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.SALARIES;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.TITLES;
 
 /**
  * Created by paulk on 12/13/2016.
@@ -36,27 +40,48 @@ public class EmployeesProvider extends ContentProvider {
     }
 
     @Override
-    public void shutdown() {
+    public void shutdown () {
         dbHelper.close ();
         super.shutdown ();
     }
 
     @Nullable
     @Override
-    public Cursor query (final Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        switch (uriMatcher.match(uri)) {
+    public Cursor query (final Uri uri, final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
+        final Boolean download = uri.getBooleanQueryParameter (BaseContract.FORCE_DOWNLOAD, false);
+        final Boolean reset = uri.getBooleanQueryParameter (BaseContract.RESET, false);
+
+        switch (uriMatcher.match (uri)) {
             case EMPLOYEES:
-                queryEmployees (uri.getBooleanQueryParameter (BaseContract.FORCE_DOWNLOAD, false), projection, selection, selectionArgs, sortOrder);
+                return queryEmployees (download, reset, projection, sortOrder);
+            case SALARIES:
+                return querySalaries (download, reset, projection, sortOrder);
+            case TITLES:
+                return queryTitles (download, reset, projection, sortOrder);
             default:
                 return null;
         }
     }
 
-    private Cursor queryEmployees(boolean download, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    private Cursor queryEmployees (final boolean download, final boolean wipe, final String[] projection, final String sortOrder) {
         if (download)
-            DownloadEmployeesTask.Employees (getContext (), dbHelper);
+            DownloadEmployeesTask.Employees (getContext (), dbHelper, wipe);
 
-        return dbHelper.getReadableDatabase ().query (EmployeesContract.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        return dbHelper.getReadableDatabase ().query (EmployeesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
+    }
+
+    private Cursor querySalaries (final boolean download, final boolean wipe, final String[] projection, final String sortOrder) {
+        if (download)
+            DownloadEmployeesTask.Salaries (getContext (), dbHelper, wipe);
+
+        return dbHelper.getReadableDatabase ().query (SalariesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
+    }
+
+    private Cursor queryTitles (final boolean download, final boolean wipe, final String[] projection, final String sortOrder) {
+        if (download)
+            DownloadEmployeesTask.Titles (getContext (), dbHelper, wipe);
+
+        return dbHelper.getReadableDatabase ().query (TitlesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
     }
 
     @Nullable
@@ -64,7 +89,8 @@ public class EmployeesProvider extends ContentProvider {
     public String getType (Uri uri) {
         switch (uriMatcher.match (uri)) {
             case EMPLOYEES:
-
+            case SALARIES:
+            case TITLES:
             default:
                 return null;
         }
@@ -88,8 +114,8 @@ public class EmployeesProvider extends ContentProvider {
         return 0;
     }
 
-    static long insertOrUpdate(final SQLiteDatabase db, final String table, final String idxColumn, final ContentValues values,
-                               final String selection, final String[] selectionArgs) {
+    static long insertOrUpdate (final SQLiteDatabase db, final String table, final String idxColumn, final ContentValues values,
+                                final String selection, final String[] selectionArgs) {
         long row = getRow (db, table, idxColumn, selection, selectionArgs);
 
         final int updated = db.update (table, values, selection, selectionArgs);
@@ -101,14 +127,16 @@ public class EmployeesProvider extends ContentProvider {
         return row;
     }
 
-    static long getRow(final SQLiteDatabase db, final String table, final String idxColumn, final String selection, final String[] selectionArgs) {
-        final Cursor cursor = db.query(table, new String[]{idxColumn}, selection, selectionArgs, null, null, null);
-
-        if (null == cursor) return 0L;
-
-        if (!cursor.moveToFirst ()) return 0L;
+    static long getRow (final SQLiteDatabase db, final String table, final String idxColumn, final String selection, final String[] selectionArgs) {
+        Cursor cursor = null;
 
         try {
+            cursor = db.query (table, new String[]{idxColumn}, selection, selectionArgs, null, null, null);
+
+            if (null == cursor) return 0L;
+
+            if (!cursor.moveToFirst ()) return 0L;
+
             return cursor.getLong (0);
         } finally {
             cursor.close ();
@@ -119,5 +147,7 @@ public class EmployeesProvider extends ContentProvider {
         uriMatcher = new UriMatcher (UriMatcher.NO_MATCH);
 
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE, EMPLOYEES);
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.SALARY, SALARIES);
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.TITLE, TITLES);
     }
 }
