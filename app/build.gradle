@@ -12,6 +12,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -20,6 +21,16 @@ android {
 
         debug {
             minifyEnabled false
+        }
+    }
+
+    productFlavors {
+        dev {
+            buildConfigField "String", "SERVER_URL", "com.paul.paulk.testdatabase.Config.DEVELOPMENT"
+        }
+
+        prod {
+            buildConfigField "String", "SERVER_URL", "com.paul.paulk.testdatabase.Config.PRODUCTION"
         }
     }
 }

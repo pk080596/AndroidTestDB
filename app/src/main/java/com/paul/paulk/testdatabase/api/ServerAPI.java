@@ -1,5 +1,6 @@
 package com.paul.paulk.testdatabase.api;
 
+import com.paul.paulk.testdatabase.BuildConfig;
 import com.paul.paulk.testdatabase.Config;
 
 import retrofit2.Retrofit;
@@ -30,7 +31,7 @@ public class ServerAPI {
 
     private ServerAPI() {
         Retrofit retrofit = new Retrofit.Builder ()
-                .baseUrl (Config.BASE_URL)
+                .baseUrl (BuildConfig.SERVER_URL)
                 .addConverterFactory (GsonConverterFactory.create ())
                 .build ();
 
