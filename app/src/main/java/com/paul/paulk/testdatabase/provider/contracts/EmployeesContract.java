@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import lombok.NonNull;
 
+import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.EmployeesProvider.BASE_URL;
 
 /**
@@ -45,7 +46,7 @@ public final class EmployeesContract extends BaseContract {
     public static void onCreate(@NonNull final SQLiteDatabase db) {
         // TODO: better restrictions
         String sql = String.format(Locale.ENGLISH, "CREATE TABLE %s (" + // table name
-                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +      // _id
+                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +       // empno
                         "%s DATETIME NOT NULL, " +                       // birthdate
                         "%s TEXT NOT NULL, " +                           // firstname
                         "%s TEXT NOT NULL, " +                           // lastname

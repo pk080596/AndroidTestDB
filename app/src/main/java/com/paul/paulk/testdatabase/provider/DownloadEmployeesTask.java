@@ -17,9 +17,9 @@ import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 import java.io.IOException;
 import java.util.List;
 
-import lombok.Synchronized;
 import retrofit2.Response;
 
+import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.EmployeesProvider.insertOrUpdate;
 
 /**
@@ -38,10 +38,12 @@ public class DownloadEmployeesTask implements Runnable {
     private final int state;
     private final static int EMPLOYEE = 0b100,
                              SALARY = 0b010,
-                             TITLE = 0b001;
+                             TITLE = 0b001,
+                             ALL = 0b111,
+                             WIPE = 0b000;
 
 
-    public DownloadEmployeesTask (final Context c, final SQLiteOpenHelper sqLiteOpenHelper, final Boolean employees,
+    private DownloadEmployeesTask (final Context c, final SQLiteOpenHelper sqLiteOpenHelper, final Boolean employees,
                                   final Boolean salaries, final Boolean titles, final Boolean wipeData) {
         context = c;
         api = ServerAPI.get ().api;
@@ -64,6 +66,14 @@ public class DownloadEmployeesTask implements Runnable {
         new Thread (new DownloadEmployeesTask (c, sqLiteOpenHelper, false, false, true, wipeData)).start ();
     }
 
+    static void All (final Context c, final SQLiteOpenHelper sqLiteOpenHelper, final Boolean wipeData) {
+        new Thread (new DownloadEmployeesTask (c, sqLiteOpenHelper, true, true, true, wipeData)).start ();
+    }
+
+    static void Wipe (final Context c, final SQLiteOpenHelper sqLiteOpenHelper) {
+        new Thread (new DownloadEmployeesTask (c, sqLiteOpenHelper, false, false, false, true));
+    }
+
     @Override
     public void run () {
         download ();
@@ -79,6 +89,14 @@ public class DownloadEmployeesTask implements Runnable {
                 break;
             case TITLE:
                 storeTitles (downloadTitles ());
+                break;
+            case ALL:
+                storeEmployees (downloadEmployees ());
+                storeSalaries (downloadSalaries ());
+                storeTitles (downloadTitles ());
+                break;
+            case WIPE:
+                wipe(dbHelper.getWritableDatabase ());
                 break;
         }
     }
@@ -113,6 +131,7 @@ public class DownloadEmployeesTask implements Runnable {
         }
     }
 
+    // TODO: can probably combine the store methods
     private void storeEmployees (final List<Employee> employees) {
         if (null == employees || employees.size () == 0)
             return;
@@ -146,8 +165,8 @@ public class DownloadEmployeesTask implements Runnable {
             if (wipe) wipe(db);
 
             for (Salary salary : salaries) {
-                insertOrUpdate (db, SalariesContract.TABLE_NAME, SalariesContract._ID,
-                        salary.values (), SalariesContract._ID + "=?", new String[]{salary.getId ()});
+                insertOrUpdate (db, SalariesContract.TABLE_NAME, _ID,
+                        salary.values (), _ID + "=?", new String[]{salary.getId ()});
             }
 
             db.setTransactionSuccessful ();
@@ -168,8 +187,8 @@ public class DownloadEmployeesTask implements Runnable {
             if (wipe) wipe(db);
 
             for (Title title : titles) {
-                insertOrUpdate (db, TitlesContract.TABLE_NAME, TitlesContract._ID,
-                        title.values (), TitlesContract._ID + "=?", new String[]{title.getId ()});
+                insertOrUpdate (db, TitlesContract.TABLE_NAME, _ID,
+                        title.values (), _ID + "=?", new String[]{title.getId ()});
             }
 
             db.setTransactionSuccessful ();
@@ -193,7 +212,13 @@ public class DownloadEmployeesTask implements Runnable {
                 db.delete (TitlesContract.TABLE_NAME, null, null);
                 db.delete (SQLITE_SEQUENCE, SQLITE_SEQUENCE_NAME + "=?", new String[]{TitlesContract.TABLE_NAME});
                 break;
+            case ALL: // fall through
+            case WIPE:
+                db.delete (EmployeesContract.TABLE_NAME, null, null);
+                db.delete (SalariesContract.TABLE_NAME, null, null);
+                db.delete (TitlesContract.TABLE_NAME, null, null);
+                db.delete (SQLITE_SEQUENCE, null, null);
+                break;
         }
-
     }
 }

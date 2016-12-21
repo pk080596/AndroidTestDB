@@ -15,8 +15,6 @@ import com.paul.paulk.testdatabase.BuildConfig;
 import com.paul.paulk.testdatabase.R;
 import com.paul.paulk.testdatabase.api.EmployeeAPI;
 import com.paul.paulk.testdatabase.api.ServerAPI;
-import com.paul.paulk.testdatabase.provider.DatabaseHelper;
-import com.paul.paulk.testdatabase.provider.DownloadEmployeesTask;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
 import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;

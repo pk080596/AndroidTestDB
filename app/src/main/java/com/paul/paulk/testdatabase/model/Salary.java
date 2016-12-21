@@ -6,19 +6,17 @@ import android.net.Uri;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.paul.paulk.testdatabase.provider.DatabaseHelper;
 import com.paul.paulk.testdatabase.provider.contracts.DatabaseObject;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import static com.paul.paulk.testdatabase.provider.EmployeesProvider.BASE_URL;
+import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.contracts.SalariesContract.EMPNO;
 import static com.paul.paulk.testdatabase.provider.contracts.SalariesContract.FROMDATE;
 import static com.paul.paulk.testdatabase.provider.contracts.SalariesContract.SALARY;
 import static com.paul.paulk.testdatabase.provider.contracts.SalariesContract.TODATE;
-import static com.paul.paulk.testdatabase.provider.contracts.SalariesContract._ID;
 
 /**
  * Created by paulk on 12/15/2016.

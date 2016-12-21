@@ -1,7 +1,6 @@
 package com.paul.paulk.testdatabase.api;
 
 import com.paul.paulk.testdatabase.BuildConfig;
-import com.paul.paulk.testdatabase.Config;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

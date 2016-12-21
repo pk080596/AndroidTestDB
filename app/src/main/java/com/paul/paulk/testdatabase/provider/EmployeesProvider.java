@@ -146,8 +146,13 @@ public class EmployeesProvider extends ContentProvider {
     static {
         uriMatcher = new UriMatcher (UriMatcher.NO_MATCH);
 
+        // content://android.support.compat/employees
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE, EMPLOYEES);
+        // content://android.support.compat/employees/detail
+        // content://android.support.compat/employees/wipe
+        // content://android.support.compat/salaries
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.SALARY, SALARIES);
+        // content://android.support.compat/titles
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.TITLE, TITLES);
     }
 }

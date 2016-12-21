@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Locale;
 
+import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.EmployeesProvider.BASE_URL;
 
 /**
@@ -17,8 +18,6 @@ public class TitlesContract extends BaseContract {
 
     public static final Uri CONTENT_URI = BASE_URL.buildUpon ().appendPath (PATH.TITLE).build ();
 
-    // row id
-    public static final String _ID = "_id";
     // employee id
     public static final String EMPNO = "emp_no";
     // employee title
@@ -40,13 +39,15 @@ public class TitlesContract extends BaseContract {
                         "%s INTEGER NOT NULL, " +
                         "%s TEXT NOT NULL, " +
                         "%s DATETIME NOT NULL, " +
-                        "%s DATETIME NOT NULL)",
+                        "%s DATETIME NOT NULL, " +
+                        "FOREIGN KEY(%s) REFERENCES %s(%s) ON DELETE CASCADE)",
                         TABLE_NAME,
                         _ID,
                         EMPNO,
                         TITLE,
                         FROMDATE,
-                        TODATE);
+                        TODATE,
+                        EMPNO, EmployeesContract.TABLE_NAME, EmployeesContract._ID);
 
         db.execSQL (sql);
 

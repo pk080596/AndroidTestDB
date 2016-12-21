@@ -5,6 +5,6 @@ package com.paul.paulk.testdatabase;
  */
 
 public class Config {
-    public final static String DEVELOPMENT = "http://192.168.30.102:8080/";
+    public final static String DEVELOPMENT = "http://192.168.30.102:5000/";
     public final static String PRODUCTION = "https://test-web-server-pk080596.herokuapp.com/";
 }

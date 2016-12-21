@@ -12,11 +12,11 @@ import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.contracts.TitlesContract.EMPNO;
 import static com.paul.paulk.testdatabase.provider.contracts.TitlesContract.FROMDATE;
 import static com.paul.paulk.testdatabase.provider.contracts.TitlesContract.TITLE;
 import static com.paul.paulk.testdatabase.provider.contracts.TitlesContract.TODATE;
-import static com.paul.paulk.testdatabase.provider.contracts.TitlesContract._ID;
 
 /**
  * Created by paulk on 12/15/2016.

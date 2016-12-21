@@ -20,6 +20,5 @@ public class BaseContract {
         public static final String EMPLOYEE = EmployeesContract.TABLE_NAME;
         public static final String SALARY = SalariesContract.TABLE_NAME;
         public static final String TITLE = TitlesContract.TABLE_NAME;
-
     }
 }
