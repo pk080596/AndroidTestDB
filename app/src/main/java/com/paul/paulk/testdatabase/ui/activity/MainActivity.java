@@ -2,6 +2,7 @@ package com.paul.paulk.testdatabase.ui.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.paul.paulk.testdatabase.R;
 import com.paul.paulk.testdatabase.api.EmployeeAPI;
 import com.paul.paulk.testdatabase.api.ServerAPI;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
+import com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
 import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
@@ -23,16 +25,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.paul.paulk.testdatabase.provider.DatabaseHelper.DATABASE_NAME;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.FORCE_DOWNLOAD;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.YES;
+import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract.WIPE;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static int EXTERNAL_STORAGE = 1;
     private EmployeeAPI api;
 
-    @BindView(R.id.load_database)
-    Button loadDatabase;
     @BindView(R.id.employees)
     TextView employees;
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         checkPermission ();
     }
 
-    @OnClick(R.id.load_database)
+    @OnClick(R.id.download_database)
     public void downloadDatabase () {
         Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
         Uri uri2 = SalariesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
@@ -55,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
         getContentResolver().query(uri, EmployeesContract.PROJECTION, null, null, null);
         getContentResolver().query(uri2, SalariesContract.PROJECTION, null, null, null);
         getContentResolver().query(uri3, TitlesContract.PROJECTION, null, null, null);
+    }
+
+    @OnClick(R.id.wipe_database)
+    public void wipeDatabase () {
+        Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendPath (WIPE).build ();
+        getContentResolver ().query (uri, null, null, null, null);
+    }
+
+    @OnClick(R.id.delete_database)
+    public void deleteDatabase () {
+        this.deleteDatabase (DATABASE_NAME);
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

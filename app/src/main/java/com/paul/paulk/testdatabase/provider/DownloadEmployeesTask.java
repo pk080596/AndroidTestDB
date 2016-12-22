@@ -71,7 +71,7 @@ public class DownloadEmployeesTask implements Runnable {
     }
 
     static void Wipe (final Context c, final SQLiteOpenHelper sqLiteOpenHelper) {
-        new Thread (new DownloadEmployeesTask (c, sqLiteOpenHelper, false, false, false, true));
+        new Thread (new DownloadEmployeesTask (c, sqLiteOpenHelper, false, false, false, true)).start();
     }
 
     @Override
@@ -200,10 +200,6 @@ public class DownloadEmployeesTask implements Runnable {
 
     private void wipe (SQLiteDatabase db) {
         switch (state) {
-            case EMPLOYEE:
-                db.delete (EmployeesContract.TABLE_NAME, null, null);
-                db.delete (SQLITE_SEQUENCE, SQLITE_SEQUENCE_NAME + "=?", new String[]{EmployeesContract.TABLE_NAME});
-                break;
             case SALARY:
                 db.delete (SalariesContract.TABLE_NAME, null, null);
                 db.delete (SQLITE_SEQUENCE, SQLITE_SEQUENCE_NAME + "=?", new String[]{SalariesContract.TABLE_NAME});
@@ -212,11 +208,10 @@ public class DownloadEmployeesTask implements Runnable {
                 db.delete (TitlesContract.TABLE_NAME, null, null);
                 db.delete (SQLITE_SEQUENCE, SQLITE_SEQUENCE_NAME + "=?", new String[]{TitlesContract.TABLE_NAME});
                 break;
-            case ALL: // fall through
+            case EMPLOYEE: // fall through
+            case ALL:
             case WIPE:
                 db.delete (EmployeesContract.TABLE_NAME, null, null);
-                db.delete (SalariesContract.TABLE_NAME, null, null);
-                db.delete (TitlesContract.TABLE_NAME, null, null);
                 db.delete (SQLITE_SEQUENCE, null, null);
                 break;
         }

@@ -12,11 +12,27 @@
     tools:context="com.paul.paulk.testdatabase.ui.activity.MainActivity">
 
     <Button
-        android:id="@+id/load_database"
+        android:id="@+id/download_database"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/load_database"/>
+        android:text="@string/download_database"/>
+
+    <Button
+        android:id="@+id/wipe_database"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/download_database"
+        android:layout_centerHorizontal="true"
+        android:text="@string/wipe_database"/>
+
+    <Button
+        android:id="@+id/delete_database"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wipe_database"
+        android:layout_centerHorizontal="true"
+        android:text="@string/delete_database"/>
 
     <TextView
         android:id="@+id/employees"

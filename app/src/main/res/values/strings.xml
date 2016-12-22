@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">TestDatabase</string>
-    <string name="load_database">Load Database</string>
-    <string name="database_loaded">Database loaded!</string>
-    <string name="database_load_failed">Database load failed</string>
+    <string name="download_database">Download Database</string>
+    <string name="database_downloaded">Database downloaded!</string>
+    <string name="database_download_failed">Database download failed</string>
+    <string name="wipe_database">Wipe Database</string>
+    <string name="delete_database">Delete Database</string>
 </resources>

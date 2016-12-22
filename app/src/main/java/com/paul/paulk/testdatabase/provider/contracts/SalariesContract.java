@@ -33,21 +33,20 @@ public class SalariesContract extends BaseContract {
             SALARY
     };
 
+    // TODO: remove auto-index and make primary key (emp_no, salary)
     public static void onCreate(@NonNull final SQLiteDatabase db) {
         String sql = String.format(Locale.ENGLISH, "CREATE TABLE %s (" +
                             "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                            "%s INTEGER NOT NULL, " +
+                            "%s INTEGER NOT NULL REFERENCES %s(%s) ON DELETE CASCADE, " +
                             "%s INTEGER NOT NULL, " +
                             "%s DATETIME NOT NULL, " +
-                            "%s DATETIME NOT NULL, " +
-                            "FOREIGN KEY(%s) REFERENCES %s(%s) ON DELETE CASCADE)",
+                            "%s DATETIME NOT NULL)",
                             TABLE_NAME,
                             _ID,
-                            EMPNO,
+                            EMPNO, EmployeesContract.TABLE_NAME, EmployeesContract._ID,
                             SALARY,
                             FROMDATE,
-                            TODATE,
-                            EMPNO, EmployeesContract.TABLE_NAME, EmployeesContract._ID);
+                            TODATE);
 
         db.execSQL (sql);
 

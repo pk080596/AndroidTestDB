@@ -12,8 +12,10 @@ public class BaseContract {
 
     public static final class MATCHER_ID {
         public static final int EMPLOYEES = 10;
+        public static final int EMPLOYEES_DETAIL = 11;
         public static final int SALARIES = 20;
         public static final int TITLES = 30;
+        public static final int WIPEALL = 99;
     }
 
     public static final class PATH {

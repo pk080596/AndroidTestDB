@@ -12,12 +12,17 @@ import android.support.compat.BuildConfig;
 
 import com.paul.paulk.testdatabase.provider.contracts.BaseContract;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
+import com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
 import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES_DETAIL;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.SALARIES;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.TITLES;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.WIPEALL;
+import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract.DETAIL;
+import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract.WIPE;
 
 /**
  * Created by paulk on 12/13/2016.
@@ -54,10 +59,14 @@ public class EmployeesProvider extends ContentProvider {
         switch (uriMatcher.match (uri)) {
             case EMPLOYEES:
                 return queryEmployees (download, reset, projection, sortOrder);
+            case EMPLOYEES_DETAIL:
+                return queryEmployeesDetail (projection, sortOrder);
             case SALARIES:
                 return querySalaries (download, reset, projection, sortOrder);
             case TITLES:
                 return queryTitles (download, reset, projection, sortOrder);
+            case WIPEALL: // fall through
+                queryWipe ();
             default:
                 return null;
         }
@@ -68,6 +77,10 @@ public class EmployeesProvider extends ContentProvider {
             DownloadEmployeesTask.Employees (getContext (), dbHelper, wipe);
 
         return dbHelper.getReadableDatabase ().query (EmployeesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
+    }
+
+    private Cursor queryEmployeesDetail (String[] projection, final String sortOrder) {
+        return dbHelper.getReadableDatabase ().query (EmployeesDetailContract.VIEW_EMPLOYEES_DETAIL, projection, null, null, null, null, sortOrder);
     }
 
     private Cursor querySalaries (final boolean download, final boolean wipe, final String[] projection, final String sortOrder) {
@@ -82,6 +95,10 @@ public class EmployeesProvider extends ContentProvider {
             DownloadEmployeesTask.Titles (getContext (), dbHelper, wipe);
 
         return dbHelper.getReadableDatabase ().query (TitlesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
+    }
+
+    private void queryWipe () {
+        DownloadEmployeesTask.Wipe (getContext (), dbHelper);
     }
 
     @Nullable
@@ -149,7 +166,9 @@ public class EmployeesProvider extends ContentProvider {
         // content://android.support.compat/employees
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE, EMPLOYEES);
         // content://android.support.compat/employees/detail
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE + "/" + DETAIL, EMPLOYEES_DETAIL);
         // content://android.support.compat/employees/wipe
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE + "/" + WIPE, WIPEALL);
         // content://android.support.compat/salaries
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.SALARY, SALARIES);
         // content://android.support.compat/titles

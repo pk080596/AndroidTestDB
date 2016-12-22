@@ -23,6 +23,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate (SQLiteDatabase sqLiteDatabase) {
+
+        // Need this to use foreign keys on sqlite3
+        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON");
+
         EmployeesContract.onCreate (sqLiteDatabase);
         SalariesContract.onCreate (sqLiteDatabase);
         TitlesContract.onCreate (sqLiteDatabase);
@@ -32,5 +36,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade (SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    @Override
+    public void onOpen (SQLiteDatabase sqLiteDatabase) {
+        // Need this to use foreign keys on sqlite3
+        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON");
     }
 }
