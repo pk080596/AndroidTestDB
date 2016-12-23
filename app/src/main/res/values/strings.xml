@@ -5,4 +5,7 @@
     <string name="database_download_failed">Database download failed</string>
     <string name="wipe_database">Wipe Database</string>
     <string name="delete_database">Delete Database</string>
+
+    <string name="tables">Tables</string>
+    <string name="views">Views</string>
 </resources>

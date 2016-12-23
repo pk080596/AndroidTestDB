@@ -46,7 +46,9 @@ dependencies {
     provided "org.projectlombok:lombok:$LOMBOK_VERSION"
     annotationProcessor "org.projectlombok:lombok:$LOMBOK_VERSION"
     // GSON
-    compile 'com.google.code.gson:gson:2.7'
+    compile "com.google.code.gson:gson:2.7"
+    // Android support libraries
+    compile "com.android.support:design:$SUPPORT_LIB_VERSION"
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

@@ -14,7 +14,7 @@ import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
+    public static final String SCHEMA = "sqlite_master";
     public static final String DATABASE_NAME = "employees.sqlite";
 
     public DatabaseHelper (final Context context, final int version) {

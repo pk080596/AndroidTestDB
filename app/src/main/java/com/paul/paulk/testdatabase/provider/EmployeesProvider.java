@@ -19,6 +19,7 @@ import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES_DETAIL;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.SALARIES;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.SCHEMA;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.TITLES;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.WIPEALL;
 import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract.DETAIL;
@@ -29,7 +30,6 @@ import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailCont
  */
 
 public class EmployeesProvider extends ContentProvider {
-
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final Uri BASE_URL = Uri.parse (ContentResolver.SCHEME_CONTENT + "://" + AUTHORITY);
 
@@ -65,6 +65,8 @@ public class EmployeesProvider extends ContentProvider {
                 return querySalaries (download, reset, projection, sortOrder);
             case TITLES:
                 return queryTitles (download, reset, projection, sortOrder);
+            case SCHEMA:
+                return querySchema (projection, sortOrder);
             case WIPEALL: // fall through
                 queryWipe ();
             default:
@@ -95,6 +97,10 @@ public class EmployeesProvider extends ContentProvider {
             DownloadEmployeesTask.Titles (getContext (), dbHelper, wipe);
 
         return dbHelper.getReadableDatabase ().query (TitlesContract.TABLE_NAME, projection, null, null, null, null, sortOrder);
+    }
+
+    private Cursor querySchema (final String[] projection, final String sortOrder) {
+        return dbHelper.getReadableDatabase ().query(DatabaseHelper.SCHEMA, projection, null, null, null, null, sortOrder);
     }
 
     private void queryWipe () {
@@ -173,5 +179,7 @@ public class EmployeesProvider extends ContentProvider {
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.SALARY, SALARIES);
         // content://android.support.compat/titles
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.TITLE, TITLES);
+        // content://android.support.compat/schema
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.SCHEMA, SCHEMA);
     }
 }

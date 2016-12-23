@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import lombok.NonNull;
 
-import static android.provider.BaseColumns._ID;
 import static com.paul.paulk.testdatabase.provider.EmployeesProvider.BASE_URL;
 
 /**
