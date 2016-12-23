@@ -16,6 +16,7 @@ import com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
 import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.ALL;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.EMPLOYEES_DETAIL;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.MATCHER_ID.SALARIES;
@@ -67,6 +68,9 @@ public class EmployeesProvider extends ContentProvider {
                 return queryTitles (download, reset, projection, sortOrder);
             case SCHEMA:
                 return querySchema (projection, sortOrder);
+            case ALL:
+                queryAll(reset);
+                return null;
             case WIPEALL: // fall through
                 queryWipe ();
             default:
@@ -101,6 +105,10 @@ public class EmployeesProvider extends ContentProvider {
 
     private Cursor querySchema (final String[] projection, final String sortOrder) {
         return dbHelper.getReadableDatabase ().query(DatabaseHelper.SCHEMA, projection, null, null, null, null, sortOrder);
+    }
+
+    private void queryAll (Boolean wipe) {
+        DownloadEmployeesTask.All (getContext (), dbHelper, wipe);
     }
 
     private void queryWipe () {
@@ -171,6 +179,8 @@ public class EmployeesProvider extends ContentProvider {
 
         // content://android.support.compat/employees
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE, EMPLOYEES);
+        // content://android.support.compat/employees/all
+        uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE + "/" + BaseContract.PATH.ALL, ALL);
         // content://android.support.compat/employees/detail
         uriMatcher.addURI (AUTHORITY, BaseContract.PATH.EMPLOYEE + "/" + DETAIL, EMPLOYEES_DETAIL);
         // content://android.support.compat/employees/wipe

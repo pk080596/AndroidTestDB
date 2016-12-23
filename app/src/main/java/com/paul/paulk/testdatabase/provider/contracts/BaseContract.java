@@ -16,6 +16,7 @@ public class BaseContract {
         public static final int SALARIES = 20;
         public static final int TITLES = 30;
         public static final int SCHEMA = 40;
+        public static final int ALL = 50;
         public static final int WIPEALL = 99;
     }
 
@@ -23,6 +24,7 @@ public class BaseContract {
         public static final String EMPLOYEE = EmployeesContract.TABLE_NAME;
         public static final String SALARY = SalariesContract.TABLE_NAME;
         public static final String TITLE = TitlesContract.TABLE_NAME;
-        public static final String SCHEMA = "schema";
+        public static final String SCHEMA = SchemaContract.TABLE_NAME;
+        public static final String ALL = "all";
     }
 }

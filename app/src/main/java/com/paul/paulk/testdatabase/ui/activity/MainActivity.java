@@ -25,9 +25,9 @@ import com.paul.paulk.testdatabase.BuildConfig;
 import com.paul.paulk.testdatabase.R;
 import com.paul.paulk.testdatabase.api.EmployeeAPI;
 import com.paul.paulk.testdatabase.api.ServerAPI;
-import com.paul.paulk.testdatabase.provider.EmployeesProvider;
 import com.paul.paulk.testdatabase.provider.contracts.EmployeesContract;
 import com.paul.paulk.testdatabase.provider.contracts.SalariesContract;
+import com.paul.paulk.testdatabase.provider.contracts.SchemaContract;
 import com.paul.paulk.testdatabase.provider.contracts.TitlesContract;
 import com.paul.paulk.testdatabase.ui.adapter.ExpandableListAdapter;
 import com.paul.paulk.testdatabase.ui.model.ExpandableMenuItem;
@@ -42,7 +42,7 @@ import butterknife.OnClick;
 
 import static com.paul.paulk.testdatabase.provider.DatabaseHelper.DATABASE_NAME;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.FORCE_DOWNLOAD;
-import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.PATH.SCHEMA;
+import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.PATH.ALL;
 import static com.paul.paulk.testdatabase.provider.contracts.BaseContract.YES;
 import static com.paul.paulk.testdatabase.provider.contracts.EmployeesDetailContract.WIPE;
 
@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
         ExpandableListView.OnGroupClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final static int LOADER_SCHEMA = 100;
+    private final static int LOADER_EMPLOYEES = 101;
+    private final static int LOADER_SALARIES = 102;
+    private final static int LOADER_TITLES = 103;
 
     private final static int EXTERNAL_STORAGE = 1;
     private EmployeeAPI api;
@@ -72,15 +75,21 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
         setContentView (R.layout.activity_navigation_drawer);
         ButterKnife.bind (this);
 
-        getSupportLoaderManager ().initLoader (LOADER_SCHEMA, null, this);
+        initMenuItems ();
+        setupActionBar ();
+        createServerAPI ();
+        checkPermission ();
+    }
 
+    private void createServerAPI() {
+        ServerAPI.create ();
+        api = ServerAPI.get ().api;
+    }
+
+    private void setupActionBar() {
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(android.R.drawable.ic_menu_sort_by_size);
         ab.setDisplayHomeAsUpEnabled(true);
-
-        ServerAPI.create ();
-        api = ServerAPI.get ().api;
-        checkPermission ();
     }
 
     private void setupNavigationDrawer(Cursor cursor) {
@@ -95,24 +104,25 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
         List<MenuItem> tables = new ArrayList<> ();
         List<MenuItem> views = new ArrayList<> ();
         while (cursor.moveToNext ()) {
-            if (cursor.getString (cursor.getColumnIndex ("type")).equals("table"))
-                tables.add (new MenuItem (cursor.getString (cursor.getColumnIndex ("name"))));
-            else if (cursor.getString (cursor.getColumnIndex ("type")).equals("view"))
-                views.add (new MenuItem (cursor.getString (cursor.getColumnIndex ("name"))));
+            String type = cursor.getString (cursor.getColumnIndexOrThrow (SchemaContract.TYPE));
+            if (type.equals(SchemaContract.TABLE))
+                tables.add (new MenuItem (cursor.getString (cursor.getColumnIndexOrThrow (SchemaContract.NAME))));
+            else if (type.equals(SchemaContract.VIEW))
+                views.add (new MenuItem (cursor.getString (cursor.getColumnIndexOrThrow (SchemaContract.NAME))));
         }
         menuItems = new ArrayList<> ();
         menuItems.add(new ExpandableMenuItem (tables, getString(R.string.tables)));
         menuItems.add(new ExpandableMenuItem (views, getString(R.string.views)));
     }
 
+    private void initMenuItems() {
+        getSupportLoaderManager ().initLoader (LOADER_SCHEMA, null, this);
+    }
+
     @OnClick(R.id.download_database)
     public void downloadDatabase () {
-        Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
-        Uri uri2 = SalariesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
-        Uri uri3 = TitlesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
-        getContentResolver().query(uri, EmployeesContract.PROJECTION, null, null, null);
-        getContentResolver().query(uri2, SalariesContract.PROJECTION, null, null, null);
-        getContentResolver().query(uri3, TitlesContract.PROJECTION, null, null, null);
+        Uri uri = EmployeesContract.CONTENT_URI.buildUpon ().appendPath (ALL).build ();
+        getContentResolver ().query (uri, null, null, null, null);
     }
 
     @OnClick(R.id.wipe_database)
@@ -168,10 +178,19 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
 
     @Override
     public Loader<Cursor> onCreateLoader (int id, Bundle args) {
+        Uri uri;
         switch (id) {
             case LOADER_SCHEMA:
-                Uri uri = EmployeesProvider.BASE_URL.buildUpon ().appendPath (SCHEMA).build ();
-                return new CursorLoader (this, uri, new String[] {"name", "type"}, null, null, null);
+                return new CursorLoader (this, SchemaContract.CONTENT_URI, SchemaContract.projection, null, null, null);
+            case LOADER_EMPLOYEES:
+                uri = EmployeesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
+                return new CursorLoader (this, uri, EmployeesContract.PROJECTION, null, null, null);
+            case LOADER_SALARIES:
+                uri = SalariesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
+                return new CursorLoader (this, uri, SalariesContract.PROJECTION, null, null, null);
+            case LOADER_TITLES:
+                uri = TitlesContract.CONTENT_URI.buildUpon ().appendQueryParameter (FORCE_DOWNLOAD, YES).build();
+                return new CursorLoader (this, uri, TitlesContract.PROJECTION, null, null, null);
         }
         return null;
     }
@@ -183,6 +202,13 @@ public class MainActivity extends AppCompatActivity implements ExpandableListVie
         switch (loader.getId ()) {
             case LOADER_SCHEMA:
                 setupNavigationDrawer (data);
+                break;
+            case LOADER_EMPLOYEES:
+                break;
+            case LOADER_SALARIES:
+                break;
+            case LOADER_TITLES:
+                break;
         }
     }
 
